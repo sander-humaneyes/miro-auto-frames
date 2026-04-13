@@ -164,6 +164,7 @@
 
   async function notifyForResult(run) {
     const { errorCount, frameCount, skippedCount, successCount } = run.summary;
+    const firstError = run.results.find((result) => result.status === 'error');
 
     if (!frameCount) {
       await miro.board.notifications.showInfo('Select at least one frame before shrinking.');
@@ -173,6 +174,11 @@
     if (errorCount) {
       if (successCount) {
         await miro.board.notifications.showError(`Shrank ${successCount} frame(s) and failed on ${errorCount}.`);
+        return;
+      }
+
+      if (errorCount === 1 && firstError && firstError.notificationMessage) {
+        await miro.board.notifications.showError(firstError.notificationMessage);
         return;
       }
 

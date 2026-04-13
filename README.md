@@ -33,6 +33,12 @@ It is built as a static instant app, so it only uses the Miro Web SDK and doesn'
 4. Install the app to your developer team.
 5. Open a board, run the app from the toolbar, select one or more frames, and click **Shrink**.
 
+## Run local checks
+
+```bash
+node --test tests/auto-frames.test.js
+```
+
 ## Host on GitHub Pages
 
 1. Push this repository to GitHub.
