@@ -11,30 +11,16 @@
   </head>
   <body>
     <div class="panel-shell">
-      <header class="hero">
-        <p class="eyebrow">Auto Frames</p>
-        <h1>Shrink frames to the content inside them</h1>
-        <p class="hero-copy">
-          Select one or more frames on the board, choose your padding, and let
-          the app resize each frame around its children.
-        </p>
-      </header>
-
       <section class="card card--summary">
-        <div class="stats">
-          <div class="stat">
-            <span class="stat-value" id="selection-count">0</span>
-            <span class="stat-label">Selected items</span>
+        <div class="section-title-row section-title-row--stacked">
+          <div>
+            <p class="eyebrow">Auto Frames</p>
+            <h1>Resize selected frames</h1>
           </div>
-          <div class="stat">
-            <span class="stat-value" id="frame-count">0</span>
-            <span class="stat-label">Frames ready</span>
-          </div>
+          <span class="mini-pill mini-pill--neutral" id="frame-count">0 frames</span>
         </div>
-        <p class="status-pill" id="selection-status">Waiting for a frame selection</p>
-        <p class="muted" id="selection-note">
-          Select one or more frames on the board to enable resizing.
-        </p>
+        <p class="status-pill" id="selection-status">Select a frame</p>
+        <p class="muted" id="selection-note">Selection updates automatically.</p>
       </section>
 
       <section class="card">
@@ -43,37 +29,28 @@
           <span class="mini-pill">0 to 200 dp</span>
         </div>
         <label class="field" for="padding-input">
-          <span class="field-label">Inset on every side of the frame</span>
+          <span class="field-label">Space inside each frame</span>
           <div class="input-row">
             <input id="padding-input" type="number" min="0" max="200" step="4" value="32" />
             <span class="input-suffix">dp</span>
           </div>
         </label>
-        <p class="muted">
-          Rotated child items are included in the fitted bounds.
-        </p>
-      </section>
-
-      <section class="card">
         <div class="button-row">
           <button class="button button--primary" id="fit-button" type="button">
             Shrink selected frames
           </button>
-          <button class="button button--secondary" id="refresh-button" type="button">
-            Refresh
-          </button>
         </div>
-        <button class="text-button" id="close-button" type="button">Close panel</button>
       </section>
 
       <section class="card">
         <div class="section-title-row">
           <h2>Last run</h2>
-          <span class="mini-pill" id="result-summary">Nothing run yet</span>
+          <span class="mini-pill" id="result-summary">Nothing yet</span>
         </div>
         <ul class="results" id="result-list"></ul>
       </section>
+
+      <span class="visually-hidden" id="selection-count">0</span>
     </div>
   </body>
 </html>
-

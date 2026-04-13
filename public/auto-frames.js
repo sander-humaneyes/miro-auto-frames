@@ -77,7 +77,7 @@
   function createFitPlan(frame, children, padding) {
     if (!children.length) {
       return {
-        reason: 'This frame is empty.',
+        reason: 'Empty frame.',
         status: 'skipped',
       };
     }
@@ -101,7 +101,7 @@
     if (unmeasurableChildren.length) {
       const unsupportedTypes = [...new Set(unmeasurableChildren.map((child) => child.type || 'unknown'))].join(', ');
       return {
-        reason: `Skipped because some child items could not be measured (${unsupportedTypes}).`,
+        reason: `Unsupported items: ${unsupportedTypes}.`,
         status: 'skipped',
         unmeasurableChildren,
       };
@@ -134,7 +134,7 @@
     if (!hasChanged) {
       return {
         childCount: children.length,
-        reason: 'This frame already fits its contents.',
+        reason: 'Already fits.',
         status: 'noop',
       };
     }
@@ -211,7 +211,7 @@
         childCount: plan.childCount,
         frameId: frame.id,
         frameLabel: label,
-        message: `Fitted to ${plan.childCount} item${plan.childCount === 1 ? '' : 's'} with ${padding} dp padding.`,
+        message: `${plan.childCount} item${plan.childCount === 1 ? '' : 's'}, ${padding} dp padding.`,
         padding,
         status: 'success',
       };
@@ -229,7 +229,7 @@
         error,
         frameId: frame.id,
         frameLabel: label,
-        message: error && error.message ? error.message : 'An unexpected error occurred while resizing this frame.',
+        message: error && error.message ? error.message : 'Resize failed.',
         status: 'error',
       };
     }
@@ -269,4 +269,3 @@
     sanitizePadding,
   };
 })();
-

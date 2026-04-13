@@ -13,11 +13,9 @@
   }
 
   function cacheElements() {
-    elements.closeButton = document.getElementById('close-button');
     elements.fitButton = document.getElementById('fit-button');
     elements.frameCount = document.getElementById('frame-count');
     elements.paddingInput = document.getElementById('padding-input');
-    elements.refreshButton = document.getElementById('refresh-button');
     elements.resultList = document.getElementById('result-list');
     elements.resultSummary = document.getElementById('result-summary');
     elements.selectionCount = document.getElementById('selection-count');
@@ -28,29 +26,20 @@
   function setBusy(isBusy) {
     state.busy = isBusy;
     elements.fitButton.disabled = isBusy || state.frames.length === 0;
-    elements.refreshButton.disabled = isBusy;
-    elements.closeButton.disabled = isBusy;
     elements.paddingInput.disabled = isBusy;
     elements.fitButton.textContent = isBusy ? 'Shrinking frames...' : 'Shrink selected frames';
   }
 
   function setUnavailableState() {
     elements.selectionCount.textContent = '0';
-    elements.frameCount.textContent = '0';
-    elements.selectionStatus.textContent = 'Open this panel inside Miro';
+    elements.frameCount.textContent = 'Preview';
+    elements.selectionStatus.textContent = 'Open in Miro';
     elements.selectionStatus.dataset.variant = 'warning';
-    elements.selectionNote.textContent = 'The panel UI loads correctly here, but board actions only work when the page is opened by the Miro Web SDK.';
+    elements.selectionNote.textContent = 'Board actions only work inside Miro.';
     elements.fitButton.disabled = true;
-    elements.refreshButton.disabled = true;
-    elements.closeButton.disabled = true;
     elements.paddingInput.disabled = true;
     elements.resultSummary.textContent = 'Preview only';
     elements.resultList.innerHTML = '';
-
-    const emptyState = document.createElement('li');
-    emptyState.className = 'result-item result-item--empty';
-    emptyState.textContent = 'Install the app in Miro to resize frames.';
-    elements.resultList.appendChild(emptyState);
   }
 
   function renderSelection() {
@@ -58,19 +47,19 @@
     const frameCount = state.frames.length;
 
     elements.selectionCount.textContent = String(selectionCount);
-    elements.frameCount.textContent = String(frameCount);
+    elements.frameCount.textContent = frameCount === 1 ? '1 frame' : `${frameCount} frames`;
 
     if (!selectionCount) {
-      elements.selectionStatus.textContent = 'Nothing selected';
+      elements.selectionStatus.textContent = 'Select a frame';
       elements.selectionStatus.dataset.variant = 'idle';
-      elements.selectionNote.textContent = 'Select one or more frames on the board to enable resizing.';
+      elements.selectionNote.textContent = 'Selection updates automatically.';
       return;
     }
 
     if (!frameCount) {
-      elements.selectionStatus.textContent = 'No frames in selection';
+      elements.selectionStatus.textContent = 'No frames selected';
       elements.selectionStatus.dataset.variant = 'warning';
-      elements.selectionNote.textContent = 'Your current selection does not include any frame items.';
+      elements.selectionNote.textContent = 'Only frames can be resized.';
       return;
     }
 
@@ -78,17 +67,17 @@
     elements.selectionStatus.dataset.variant = 'ready';
     elements.selectionNote.textContent =
       frameCount === selectionCount
-        ? 'Every selected item is a frame, so the whole selection can be resized.'
-        : `${frameCount} frame${frameCount === 1 ? '' : 's'} will be resized. Non-frame items are ignored.`;
+        ? 'Ready to resize.'
+        : 'Non-frame items will be ignored.';
   }
 
   function formatSummary(summary) {
     if (!summary) {
-      return 'Nothing run yet';
+      return 'Nothing yet';
     }
 
     if (!summary.frameCount) {
-      return 'No selected frames';
+      return 'No frames';
     }
 
     const parts = [];
@@ -133,10 +122,6 @@
     elements.resultList.innerHTML = '';
 
     if (!state.lastRun || !state.lastRun.results.length) {
-      const emptyState = document.createElement('li');
-      emptyState.className = 'result-item result-item--empty';
-      emptyState.textContent = 'Run the action to see per-frame results here.';
-      elements.resultList.appendChild(emptyState);
       return;
     }
 
@@ -219,10 +204,6 @@
     }
   }
 
-  async function handleClose() {
-    await miro.board.ui.closePanel();
-  }
-
   async function init() {
     cacheElements();
     renderResults();
@@ -233,12 +214,6 @@
     }
 
     elements.fitButton.addEventListener('click', handleFit);
-    elements.refreshButton.addEventListener('click', () => {
-      refreshSelection().catch((error) => {
-        console.error('Auto Frames failed to refresh selection', error);
-      });
-    });
-    elements.closeButton.addEventListener('click', handleClose);
 
     const selectionUpdate = (event) => {
       refreshSelection(event.items).catch((error) => {
